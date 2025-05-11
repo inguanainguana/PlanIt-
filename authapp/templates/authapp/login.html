@@ -1,0 +1,49 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>{{ title }}</title>
+{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="{{ description }}">
+    <meta name="keywords" content="{{ keywords }}">
+{% endblock %}
+{% block content %}
+      <title>Войти</title>
+    <div class="registration-form">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-icon">
+                <img src="{% static 'icons8-пользователь-64 (1).png' %}" class="icon-image" alt="Иконка входа">
+            </div>
+            <div class="form-group mt-5">
+                <input type="text"
+                       class="form-control {% if form.username.errors %}is-invalid{% elif form.username.value %}is-valid{% endif %}"
+                       id="username" name="username" placeholder="Логин" required>
+                {% if form.username.errors %}
+                    {% for error in form.username.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <input type="password"
+                       class="form-control {% if form.password.errors %}is-invalid{% elif form.password.value %}is-valid{% endif %}"
+                       id="password" name="password" placeholder="Пароль" required>
+                {% if form.password.errors %}
+                    {% for error in form.password.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="form-group text-center mt-4">
+                <button type="submit" class="btn btn-secondary">Войти</button>
+            </div>
+            <div class="form-group text-center mt-4">
+                <p>Ещё не зарегистрировались? <a href="{% url 'authapp:register' %}" class="underline-animation">Зарегистрируйтесь</a></p>
+            </div>
+        </form>
+    </div>
+    <script src="{% static 'js/registration.js' %}"></script>
+{% endblock %}

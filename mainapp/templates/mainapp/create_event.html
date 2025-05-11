@@ -1,0 +1,79 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+{% block title %}
+    <title>{{ title }}</title>
+{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="{{ description }}">
+    <meta name="keywords" content="{{ keywords }}">
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="card">
+            <div class="card-body d-flex flex-column align-items-center">
+                <h1 class="card-title mb-4 text-center">Ваше мероприятие начинается здесь. <br> Давайте добавим его!
+                </h1>
+                <form method="post" enctype="multipart/form-data" class="w-100">
+                    {% csrf_token %}
+                    <div class="mb-4 mt-4">
+                        <input type="text" name="title" id="id_title" class="form-control"
+                               placeholder="Название мероприятия">
+                    </div>
+
+                    <div class="mb-4">
+                        <textarea name="description" id="id_description" class="form-control" rows="4"
+                                  placeholder="Описание"></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <input type="text" name="location" id="id_location" class="form-control"
+                               placeholder="Место проведения">
+                    </div>
+
+                    <div class="mb-4">
+                        <input type="date" name="deadline_date" id="id_deadline_date"
+                               class="form-control form-control-lg">
+                    </div>
+
+                    <div class="mb-4">
+                        <input type="time" name="event_time" id="id_event_time" class="form-control">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Выберите иконку для вашего мероприятия!</label>
+                        <div class="d-flex flex-wrap justify-content-center">
+                            {% for category in form.category.field.queryset %}
+                                <div class="m-2 category-icon-container">
+                                    <input type="radio" id="category_{{ category.id }}" name="category"
+                                           value="{{ category.id }}" class="d-none">
+                                    <label for="category_{{ category.id }}" class="category-icon-label">
+                                        <img src="{{ category.icon.url }}" alt="{{ category.name }}"
+                                             class="category-icon">
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column align-items-center">
+                        <button type="submit" class="btn btn-secondary mb-2">Сохранить</button>
+                        <a href="{% url 'mainapp:event_list' %}" class="underline-animation">К списку мероприятий</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const categoryIconLabels = document.querySelectorAll('.category-icon-label');
+        categoryIconLabels.forEach(label => {
+            label.addEventListener('click', () => {
+                const radioButton = label.previousElementSibling;
+                radioButton.checked = true;
+            });
+        });
+    </script>
+
+{% endblock %}

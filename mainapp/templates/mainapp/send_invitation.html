@@ -1,0 +1,49 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+{% block title %}
+    <title>{{ title }}</title>
+{% endblock %}
+{% block meta %}
+    <meta name="description" content="{{ description }}">
+    <meta name="keywords" content="{{ keywords }}">
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <h2 class="card-title mb-4 text-center">Пригласите всех, кого хотите видеть! <br>Введите email и
+                            отправьте приглашение.</h2>
+                        <form method="post" class="w-100">
+                            {% csrf_token %}
+                            <div class="mb-4">
+                                <select name="event" id="event" class="form-select form-control form-control-lg"
+                                        required>
+                                    {% for event in events %}
+                                        <option value="{{ event.id }}">{{ event.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <input type="text" name="name" id="name" class="form-control"
+                                       placeholder="Имя приглашённого" required>
+                            </div>
+
+                            <div class="mb-4">
+                                <input type="email" name="email" id="email" class="form-control"
+                                       placeholder="Email приглашённого" required>
+                            </div>
+
+
+                            <div class="d-flex flex-column align-items-center">
+                                <button type="submit" class="btn btn-secondary mb-2">Отправить</button>
+                                <a href="{% url 'mainapp:invitation_list' %}" class="underline-animation">К списку гостей</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

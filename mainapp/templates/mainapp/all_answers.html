@@ -1,0 +1,95 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+{% block title %}
+    <title>{{ title }}</title>
+{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="{{ description }}">
+    <meta name="keywords" content="{{ keywords }}">
+{% endblock %}
+{% block content %}
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Застряли в планировании? Напишите нам!</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+
+                <div class="mb-4">
+                    <form method="get" class="mb-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control bigger-search" name="q" value="{{ search_query }}"
+                                   placeholder="Напишите вопрос или проблему"
+                                   style=" padding: 0.90rem 1rem;  font-size: 1.2rem">
+                            <button class="btn btn-secondary" type="submit">Искать</button>
+                        </div>
+                    </form>
+
+                    {% if faqs %}
+                        {% if search_query %}
+                            <h3>Результаты поиска</h3>
+                        {% else %}
+                            <h3>Все ответы</h3>
+                        {% endif %}
+
+                        <div id="faq-list">
+                            {% for faq in faqs %}
+                                <div class="card mb-3 shadow-sm">
+                                    <div class="card-header" id="heading-{{ faq.id }}">
+                                        <h2 class="mb-0">
+                                            <button class="btn btn-link btn-block text-left collapsed" type="button"
+                                                    data-bs-toggle="collapse" data-bs-target="#collapse-{{ faq.id }}"
+                                                    aria-expanded="false" aria-controls="collapse-{{ faq.id }}">
+                                                {{ faq.question }}
+                                            </button>
+                                        </h2>
+                                    </div>
+                                    <div id="collapse-{{ faq.id }}" class="collapse"
+                                         aria-labelledby="heading-{{ faq.id }}" data-bs-parent="#faq-list">
+                                        <div class="card-body">
+                                            {{ faq.answer|linebreaksbr }}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="col-12 text-center mt-3">
+                            <div style="font-size: 50px;">❌</div>
+                            <h2>Упс! Что-то пошло не так...</h2>
+                            <p style="font-size: 20px;">К сожалению, мы не смогли найти информацию, соответствующую
+                                вашему поисковому запросу.</p>
+                            <p style="font-size: 19px;">Попробуйте изменить параметры поиска или попробовать нам
+                                написать!</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h3 class="card-title text-center">Не нашли нужную информацию? Спросите у нас!</h3>
+                        {% if submitted_successfully %}
+                            <div class="mt-3 text-center">
+                                <p class="lead">Спасибо за ваше обращение!</p>
+                                <p>Мы получили вашу заявку и свяжемся с вами в ближайшее время. Пожалуйста, ожидайте
+                                    ответа на вашу электронную почту.</p>
+                            </div>
+                        {% else %}
+                            <form method="post">
+                                {% csrf_token %}
+                                {{ support_ticket_form.as_p }}
+                                <div class="text-center">
+                                    <button type="submit" class="btn btn-secondary mt-3">Отправить заявку</button>
+                                </div>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class=" mt-4 text-center">
+        <a href="{% url 'mainapp:support' %}" class="underline-animation fw-bold">Назад</a>
+    </div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+{% block title %}
+    <title>{{ title }}</title>
+{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="{{ description }}">
+    <meta name="keywords" content="{{ keywords }}">
+{% endblock %}
+{% block content %}
+    <div class="card mt-3">
+        <div class="card-body">
+            <h3 class="card-title text-center">Дайте нам знать, что вы думаете!</h3>
+            <p class="lead text-center">Пожалуйста, поделитесь своими впечатлениями, предложениями и
+                замечаниями.</p>
+
+            {% if form_submitted %}
+                <p class="text-center">Ваш отзыв успешно отправлен и будет рассмотрен
+                    администратором!</p>
+            {% else %}
+                <form method="post" class="mt-4">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    {% if user.is_authenticated %}
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-secondary">Отправить отзыв</button>
+                        </div>
+                    {% else %}
+                        <p class="text-center">Чтобы оставить отзыв, пожалуйста, <a
+                                href="{% url 'authapp:login' %}">войдите</a> или <a
+                                href="{% url 'authapp:register' %}">зарегистрируйтесь</a>.</p>
+                    {% endif %}
+                </form>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+{% block title %}
+    <title>{{ title }}</title>
+{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="{{ description }}">
+    <meta name="keywords" content="{{ keywords }}">
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <h2 class="card-title mb-4 text-center">Управляйте финансами! Добавьте новый расход!</h2>
+                        <form method="post" class="w-100">
+                            {% csrf_token %}
+                            <div class="mb-4">
+                                <select name="category" id="category" class="form-select form-control" required>
+                                    <option value="" disabled selected>Выберите категорию</option>
+                                    {% for category in categories %}
+                                        <option value="{{ category.id }}">{{ category.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="other_category_checkbox">
+                                <label class="form-check-label" for="other_category_checkbox">Другое</label>
+                            </div>
+                            <div class="mb-4" id="other_category_container" style="display: none;">
+                                <input type="text" name="other_category" id="other_category" class="form-control"
+                                       placeholder="Введите название категории">
+                            </div>
+
+                            <div class="mb-4">
+                                <input type="number" name="amount" id="amount" class="form-control" placeholder="Сумма"
+                                       required>
+                            </div>
+                            <div class="mb-4">
+                                <input type="date" name="date" id="date" class="form-control" required>
+                            </div>
+                            <div class="d-flex flex-column align-items-center">
+                                <button type="submit" class="btn btn-secondary mb-2">Сохранить расход</button>
+                                <a href="{% url 'mainapp:budget_list' %}?event_id={{ event.id }}" class="underline-animation">К списку бюджета</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+ <script src="{% static 'js/category.js' %}"></script>
+{% endblock %}

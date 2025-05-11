@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подтверждение вашей заявки в поддержку</title>
+    <style>
+        body {
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+            color: #333333;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+
+        .highlight {
+            font-weight: bold;
+            color: #E07A5F;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <h1>Ваша заявка принята!</h1>
+
+    <p>Здравствуйте!</p>
+    <p>Мы получили вашу заявку в службу поддержки по теме: "<span class="highlight">{{ ticket.subject }}</span>". Спасибо
+        за ваше обращение.</p>
+    <p>Наша команда уже работает над вашим вопросом, и специалист свяжется с вами в ближайшее время. Мы приложим все
+        усилия, чтобы предоставить вам решение как можно скорее.</p>
+    <p>Если у вас появятся дополнительные вопросы или информация, пожалуйста, не стесняйтесь отвечать на это письмо.</p>
+
+    <p>С уважением,<br>Команда поддержки PlanIt!</p>
+
+</div>
+</body>
+</html>

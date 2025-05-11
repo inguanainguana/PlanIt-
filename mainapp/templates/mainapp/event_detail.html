@@ -1,0 +1,51 @@
+{% extends 'mainapp/base.html' %}
+
+{% block title %}
+    <title>{{ title }}</title>
+{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="{{ description }}">
+    <meta name="keywords" content="{{ keywords }}">
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">{{ event.title }}</h2>
+                    <p class="card-text">{{ event.description }}</p>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="card-text">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <strong>Место проведения:</strong> {{ event.location }}
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="card-text">
+                                <i class="far fa-calendar-alt"></i>
+                                <strong>Дата:</strong> {{ event.deadline_date }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <p class="card-text">
+                                <i class="far fa-clock"></i>
+                                <strong>Время проведения:</strong> {{ event.event_time }}
+                            </p>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <a href="{% url 'mainapp:event_list' %}" class="underline-animation">
+                                <i class="fas fa-arrow-right "></i> К списку
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+{% block title %}
+    <title>{{ title }}</title>
+{% endblock %}
+{% block meta %}
+    <meta name="description" content="{{ description }}">
+    <meta name="keywords" content="{{ keywords }}">
+{% endblock %}
+{% block content %}
+     <div class="container mt-5">
+        <div class="card p-3 mb-5">
+            <div class="card-header bg-primary text-white text-center"
+                 style="margin: -50px -17px 0 -17px; padding: 15px;">
+                <h2 class="card-title text-center">Ошибка подтверждения</h2>
+            </div>
+            <div class="card-body">
+                <h3 class="card-title text-center">К сожалению, ссылка для подтверждения недействительна.</h3>
+                  <p class="card-text text-center">К сожалению, предоставленная вами ссылка на приглашение недействительна. <br> Пожалуйста, убедитесь, что ссылка верна, или обратитесь к организатору мероприятия за новой.</p>
+
+                </div>
+            </div>
+            <div class="text-center mt-5">
+                <a href="{% url 'mainapp:index' %}" class="underline-animation">Вернуться на главную страницу</a>
+            </div>
+        </div>
+{% endblock %}

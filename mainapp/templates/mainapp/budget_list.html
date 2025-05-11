@@ -1,0 +1,240 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>{{ title }}</title>
+{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="{{ description }}">
+    <meta name="keywords" content="{{ keywords }}">
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-3">
+        {% if not event_id %}
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="text-center">
+                        <h1 class="display-4">Ваши мероприятия: полный финансовый контроль!</h1>
+                        <p class="lead">Здесь вы можете просматривать бюджеты и финансовые показатели ваших мероприятий.
+                            Выберите мероприятие, чтобы получить доступ к аналитике!</p>
+                        <hr class="my-4 bold-hr">
+                        <p>Выберите мероприятие для анализа финансов:</p>
+                    </div>
+                    <form method="post" class="d-flex flex-column flex-md-row align-items-center mb-3">
+                        {% csrf_token %}
+                        <div class="flex-grow-1 me-md-3 mb-2 mb-md-0">
+                            <label for="{{ form.event.id_for_label }}"
+                                   class="form-label visually-hidden">Мероприятие</label>
+                            <select class="form-select form-select-lg" id="{{ form.event.id_for_label }}"
+                                    name="{{ form.event.name }}">
+                                <option value="" selected disabled>Выберите мероприятие из списка...</option>
+                                {% for value, label in form.event.field.choices %}
+                                    <option value="{{ value }}">{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                            {% if form.event.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.event.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <button type="submit" class="btn btn-secondary btn-lg">Просмотр статистики</button>
+                    </form>
+                </div>
+            </div>
+            </div>
+        {% else %}
+            <div class="row justify-content-between mb-3 align-items-center">
+                <div class="col-md-8">
+                    <h2 class="mb-0">Добавляйте бюджет, расходы и доходы в один клик!</h2>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="budgetDropdown"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                            Действия
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="budgetDropdown">
+                            {% if budget %}
+                                {% if budget.user == request.user or event.creator == request.user %}
+                                    <li><a class="dropdown-item"
+                                           href="{% url 'mainapp:edit_budget' event_id=event_id %}">Редактировать
+                                        Бюджет</a></li>
+                                {% endif %}
+                            {% else %}
+                                <li><a class="dropdown-item" href="{% url 'mainapp:add_budget' event_id=event_id %}">Добавить
+                                    Бюджет</a></li>
+                            {% endif %}
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'mainapp:add_income' event_id=event_id %}">Добавить
+                                Доход</a></li>
+                            <li><a class="dropdown-item" href="{% url 'mainapp:add_expense' event_id=event_id %}">Добавить
+                                Расход</a></li>
+                            {% if budget or total_expenses or total_incomes %}
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                       data-bs-target="#deleteModal">Удалить...</a></li>
+                            {% endif %}
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+
+            {% if total_expenses > 0 or total_incomes > 0 or budget %}
+                <div class="row justify-content-center mb-4">
+                    <div class="card w-100">
+                        <div class="card-body">
+                            <h2 class="card-title mb-4">Отчет по мероприятию</h2>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <p class="card-text"><strong>Общий доход:</strong> {{ total_incomes }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="card-text"><strong>Общий расход:</strong> {{ total_expenses }}</p>
+                                </div>
+                            </div>
+                            {% if budget %}
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <p class="card-text"><strong>Бюджет:</strong> {{ budget.total_budget }}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="card-text"><strong>Остаток
+                                            бюджета:</strong> {{ budget.remaining_budget }}</p>
+                                    </div>
+                                </div>
+                                <p class="card-text mt-3"><strong>Описание:</strong> {{ budget.description }}</p>
+                            {% else %}
+                                <p class="card-text mt-3"><strong>Бюджет не задан.</strong> Добавьте бюджет для более
+                                    точного контроля.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                {% if total_expenses > 0 or total_incomes > 0 %}
+                    <div class="d-flex justify-content-center mb-4">
+                        <button id="showIncomes" class="btn btn-secondary me-3"
+                                {% if total_incomes == 0 %}disabled{% endif %}>Доходы
+                        </button>
+                        <button id="showExpenses" class="btn btn-secondary"
+                                {% if total_expenses == 0 %}disabled{% endif %}>Расходы
+                        </button>
+                    </div>
+                    <div class="d-flex justify-content-center" style="flex-wrap: wrap;">
+                        <div style="width: 45%; min-width: 300px;">
+                            <h4 id="chartTitle" class="text-center">
+                                {% if total_expenses > 0 %}
+                                    Расходы по категориям
+                                {% elif total_incomes > 0 %}
+                                    Доходы по категориям
+                                {% else %}
+                                    Нет данных
+                                {% endif %}
+                            </h4>
+                            <canvas id="chart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="row justify-content-center mb-4">
+                    <div class="card w-100">
+                        <div class="card-body text-center">
+                            <h3 class="mb-4">Пока нет данных для отображения!</h3>
+                            <p class="lead mb-4">Добавьте свой бюджет, расходы или доходы, и вы сможете увидеть здесь
+                                свой финансовый отчет.</p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg" style="margin-top: 10%; margin-bottom: 10%;">
+                    <div class="modal-content" style="max-height: 80vh; overflow-y: auto;">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel">Удалить данные</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Закрыть"></button>
+                        </div>
+                        <form method="post" action="{% url 'mainapp:delete_data' event_id=event_id %}">
+                            {% csrf_token %}
+                            <div class="modal-body">
+                                <p><strong>Внимание!</strong> Удаление необратимо. Будьте внимательны при выборе.</p>
+                                {% if budget %}
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="delete_budget"
+                                                   name="delete_budget" id="deleteBudget"
+                                                   {% if not is_creator and budget.user != request.user %}disabled{% endif %}>
+                                            <label class="form-check-label" for="deleteBudget">Удалить Бюджет</label>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                {% if expenses %}
+                                    <div class="mb-3">
+                                        <label class="form-label">Выберите расходы для удаления:</label>
+                                        <div id="expensesCheckboxes">
+                                            {% for expense in expenses %}
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                           name="selected_expenses" value="{{ expense.id }}"
+                                                           id="expense{{ expense.id }}">
+                                                    <label class="form-check-label" for="expense{{ expense.id }}">
+                                                        {{ expense.category.name|default_if_none:expense.other_category }}
+                                                        - {{ expense.amount }} ({{ expense.date }})
+                                                    </label>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <p>Нет расходов для удаления.</p>
+                                {% endif %}
+                                {% if incomes %}
+                                    <div class="mb-3">
+                                        <label class="form-label">Выберите доходы для удаления:</label>
+                                        <div id="incomesCheckboxes">
+                                            {% for income in incomes %}
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                           name="selected_incomes" value="{{ income.id }}"
+                                                           id="income{{ income.id }}">
+                                                    <label class="form-check-label" for="income{{ income.id }}">
+                                                        {{ income.category.name|default_if_none:income.other_category }}
+                                                        - {{ income.amount }} ({{ income.date }})
+                                                    </label>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <p>Нет доходов для удаления.</p>
+                                {% endif %}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                <button type="submit" class="btn btn-danger">Удалить выбранное</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        const incomesData = {{ incomes_data|safe }};
+        const expensesData = {{ expenses_data|safe }};
+    </script>
+    <script src="{% static 'js/chart.srcipt.js' %}"></script>
+{% endblock %}

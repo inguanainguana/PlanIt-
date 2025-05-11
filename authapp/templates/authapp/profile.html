@@ -1,0 +1,113 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+{% block title %}
+    <title>{{ title }}</title>
+{% endblock %}
+{% block meta %}
+    <meta name="description" content="{{ description }}">
+    <meta name="keywords" content="{{ keywords }}">
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <img src="{{ user.get_profile_picture }}" alt="Аватар пользователя" class="rounded-circle img-fluid mb-3"
+                             style="width: 200px; height: 200px; object-fit: cover;">
+                        <h5 class="card-title">{{ user.first_name }} {{ user.last_name }}</h5>
+                        <p class="card-subtitle text-muted">{{ user.username }}</p>
+                        <a href="{% url 'authapp:edit_profile' %}" class="btn btn-sm btn-secondary">
+                            <i class="me-2"></i> Редактировать профиль
+                        </a>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="col-md-8 mt-4">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white text-center"
+                         style="margin: -35px -31px 0 -31px; padding: 15px;">
+                        <h5 class="mb-0">{{ phrase }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">Информация о вас:</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><span>Имя</span>: {{ user.first_name }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><span>Фамилия</span>: {{ user.last_name }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><span>Логин</span>: {{ user.username }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><span>Email</span>: {{ user.email }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                {% if recent_activity %}
+                    <div class="card mb-4">
+                    <div class="card-header bg-secondary text-white text-center"
+                         style="margin: -35px -31px 0 -31px; padding: 15px;">
+                        <h5 class="mb-0">Последняя активность</h5>
+                    </div>
+                    <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        {% for item in recent_activity %}
+                            <li class="list-group-item">
+                                <small class="text-muted">{{ item.timestamp|date:"d.m.Y H:i" }}</small><br>
+                                <strong>Вы</strong> {{ item.description }}
+                                {% if item.related_object %}
+                                    {% if item.type == 'event_created' %}
+                                        <br><small class="text-muted">Мероприятие: <a
+                                            href="{% url 'mainapp:event_detail' event_id=item.related_object.pk %}"
+                                            class="underline-animation">{{ item.related_object.title }}</a></small>
+                                    {% elif item.type == 'task_assigned' %}
+                                        <br><small class="text-muted">Мероприятие: <a
+                                            href="{% url 'mainapp:event_detail' event_id=item.related_object.event.pk %}"
+                                            class="underline-animation">{{ item.related_object.event.title }}</a></small>
+                                    {% elif item.type == 'invitation_sent' %}
+                                        <br><small class="text-muted">Мероприятие: <a
+                                            href="{% url 'mainapp:event_detail' event_id=item.related_object.event.pk %}"
+                                            class="underline-animation">{{ item.related_object.event.title }}</a></small>
+                                    {% elif item.type == 'expense_added' or item.type == 'income_added' %}
+                                        <br><small class="text-muted">Мероприятие: <a
+                                            href="{% url 'mainapp:event_detail' event_id=item.related_object.event.pk %}"
+                                            class="underline-animation">{{ item.related_object.event.title }}</a></small>
+                                    {% elif item.type == 'task_created' %}
+                                        <br><small class="text-muted">Мероприятие: <a
+                                            href="{% url 'mainapp:event_detail' event_id=item.related_object.event.pk %}"
+                                            class="underline-animation">{{ item.related_object.event.title }}</a></small>
+                                    {% elif item.type == 'budget_created' %}
+                                        <br><small class="text-muted">Мероприятие: <a
+                                            href="{% url 'mainapp:event_detail' event_id=item.related_object.event.pk %}"
+                                            class="underline-animation">{{ item.related_object.event.title }}</a></small>
+                                    {% endif %}
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <i class="bi bi-activity" style="font-size: 3em; color: #aaa;"></i>
+                            <p class="text-muted mt-3">Ваши мероприятия пока ждут своего часа…</p>
+                            <p class="text-muted">Начните планировать, и ваша история активности оживет!</p>
+                        </div>
+                    </div>
+                {% endif %}
+                </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

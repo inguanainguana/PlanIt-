@@ -1,0 +1,66 @@
+{% extends 'mainapp/base.html' %}
+
+{% block content %}
+    <h1>Отчеты о расходах и доходах</h1>
+
+    <form method="get">
+        {{ form.as_p }}
+        <button type="submit">Фильтровать</button>
+    </form>
+
+    <h2>Общая сумма расходов: {{ total_expenses }}</h2>
+    <h2>Общий доход: {{ total_income }}</h2>
+
+    <h3>Диаграмма расходов</h3>
+    <canvas id="expensesChart" width="400" height="200"></canvas>
+
+    <h3>Диаграмма доходов</h3>
+    <canvas id="incomeChart" width="400" height="200"></canvas>
+
+    <script>
+        const expenseCtx = document.getElementById('expensesChart').getContext('2d');
+        const expensesChart = new Chart(expenseCtx, {
+            type: 'pie',
+            data: {
+                labels: {{ expense_labels|safe }},
+                datasets: [{
+                    data: {{ expense_data|safe }},
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        // Добавьте больше цветов по мере необходимости
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+        });
+
+        const incomeCtx = document.getElementById('incomeChart').getContext('2d');
+        const incomesChart = new Chart(incomeCtx, {
+            type: 'pie',
+            data: {
+                labels: {{ income_labels|safe }},
+                datasets: [{
+                    data: {{ income_data|safe }},
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+        });
+    </script>
+{% endblock %}

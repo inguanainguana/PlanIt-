@@ -1,0 +1,181 @@
+{% extends 'mainapp/base.html' %}
+{% load static %}
+{% block title %}
+    <title>{{ title }}</title>
+{% endblock %}
+
+{% block meta %}
+    <meta name="description" content="{{ description }}">
+    <meta name="keywords" content="{{ keywords }}">
+{% endblock %}
+{% block content %}
+    <div class="container-fluid d-flex flex-column justify-content-center align-items-center mt-3">
+        <div class="text-center">
+            <h3 class="display-4 font-weight-bold">PlanIt! Ваш надежный помощник в организации мероприятий</h3>
+            <p class="lead">Планируйте и управляйте событиями легко и эффективно!</p>
+            <p class="lead">С помощью PlanIt! вы сможете координировать задачи, управлять бюджетом и ресурсами.
+                <br>Начните пользоваться PlanIt! сегодня и достигайте успеха!</p>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'mainapp:event_list' %}" class="btn btn-secondary btn-lg"
+                   style="padding: 10px 50px; font-size: 20px;">Начать</a>
+            {% else %}
+                <a href="{% url 'authapp:login' %}" class="btn btn-secondary btn-lg"
+                   style="padding: 10px 50px; font-size: 20px;">Начать</a>
+            {% endif %}
+        </div>
+    </div>
+    <div class="carousel-container mt-5">
+        <ul class="list"
+            data-image-paths='[ "{% static 'slide/Frame 24.png' %}", "{% static 'slide/video_2025-05-08_13-14-21 (1) (1).gif' %}", "{% static 'slide/video_2025-05-08_11-07-20-ezgif.com-speed.gif' %}", "{% static 'slide/video_2025-05-08_12-44-52.gif' %}", "{% static 'slide/video_2025-05-08_13-44-28 (1).gif' %}" ]'>
+            <li class="hide"><img src="{% static 'slide/Frame 24.png' %}" alt="PlanIt! Нвчните планировать"></li>
+            <li class="prev"><img src="{% static 'slide/video_2025-05-08_13-14-21 (1) (1).gif' %}"
+                                  alt="Приглашение гостей">
+            </li>
+            <li class="act"><img src="{% static 'slide/video_2025-05-08_11-07-20-ezgif.com-speed.gif' %}"
+                                 alt="Создание мероприятия"></li>
+            <li class="next"><img src="{% static 'slide/video_2025-05-08_12-44-52.gif' %}" alt="Добавление задач"></li>
+            <li class="next new-next"><img src="{% static 'slide/video_2025-05-08_13-44-28 (1).gif' %}"
+                                           alt="Управление бюджетом"></li>
+        </ul>
+        <div class="carousel-controls">
+            <div class="carousel-control prev">&#10094;</div>
+            <div class="carousel-control next">&#10095;</div>
+        </div>
+    </div>
+    <div class="swipe"></div>
+    <div class="swipe-area"></div>
+    <div class="container mt-5">
+        <h3 class="text-center mt-5">Наши преимущества</h3>
+        <div class="row text-center mt-4">
+            <div class="col-12 col-md-3 mb-4">
+                <div class="d-flex flex-column align-items-center">
+                    <img src="{% static 'icons/icons8-планирование-96.png' %}" alt="Удобное планирование"
+                         class="img-fluid mb-2">
+                    <h5>Удобное планирование</h5>
+                    <p class="text-muted">Планируйте свои задачи легко и удобно.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 mb-4">
+                <div class="d-flex flex-column align-items-center">
+                    <img src="{% static 'icons/icons8-планировщик-96.png' %}" alt="Управление задачами"
+                         class="img-fluid mb-2">
+                    <h5>Управление задачами</h5>
+                    <p class="text-muted">Эффективно управляйте задачами и проектами.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 mb-4">
+                <div class="d-flex flex-column align-items-center">
+                    <img src="{% static 'icons/icons8-бюджет-96.png' %}" alt="Составление бюджета"
+                         class="img-fluid mb-2">
+                    <h5>Составление бюджета</h5>
+                    <p class="text-muted">Контролируйте свои расходы и доходы.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-3 mb-4">
+                <div class="d-flex flex-column align-items-center">
+                    <img src="{% static 'icons/icons8-командная-работа-96.png' %}" alt="Командная работа"
+                         class="img-fluid mb-2">
+                    <h5>Командная работа</h5>
+                    <p class="text-muted">Работайте в команде и достигайте общих целей.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+        <h3 class="text-center">Для кого PlanIt!</h3>
+        <div class="row mt-4">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <img src="{% static 'icons/icons8-свадьба-96.png' %}" alt="Планирование свадеб"
+                             class="img-fluid mb-2">
+                        <h5 class="card-title">Организаторы свадеб</h5>
+                        <p class="card-text">От составления списка гостей до выбора подрядчиков - PlanIt! поможет
+                            сделать вашу свадьбу идеальной.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <img src="{% static 'icons/icons8-организационная-структура-люди-96.png' %}"
+                             alt="Организация конференций"
+                             class="img-fluid mb-2">
+                        <h5 class="card-title">Менеджеры конференций</h5>
+                        <p class="card-text">Управляйте расписанием, участниками и бюджетом конференции без
+                            лишних хлопот.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <img src="{% static 'icons/icons8-корпорация-96.png' %}" alt="Корпоративные мероприятия"
+                             class="img-fluid mb-2">
+                        <h5 class="card-title">Специалисты по корпоративным мероприятиям</h5>
+                        <p class="card-text">Планируйте корпоративы, тимбилдинги и другие события для вашей компании
+                            эффективно.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <img src="{% static 'icons/icons8-подарки-на-день-рождения-96.png' %}"
+                             alt="Дни рождения и праздники"
+                             class="img-fluid mb-2">
+                        <h5 class="card-title">Частные лица</h5>
+                        <p class="card-text">Планируйте дни рождения, юбилеи и другие личные праздники с легкостью.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <img src="{% static 'icons/icons8-фестиваль-96.png' %}"
+                             alt="Фестивали и массовые мероприятия" class="img-fluid mb-2">
+                        <h5 class="card-title">Организаторы фестивалей</h5>
+                        <p class="card-text">Координируйте множество задач и участников для успешного проведения
+                            масштабных мероприятий.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <img src="{% static 'icons/icons8-воздушные-шары-96.png' %}" alt="Любые другие события"
+                             class="img-fluid mb-2">
+                        <h5 class="card-title">И для любых других событий!</h5>
+                        <p class="card-text">PlanIt! гибко настраивается под любые ваши потребности в организации.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container mt-5">
+        <h3 class="text-center">Отзывы</h3>
+        <div class="row mt-4">
+            {% for review in reviews %}
+                <div class="col-md-4 mb-4 d-flex justify-content-center">
+                    <div class="card">
+                        <div class="card-body d-flex flex-column align-items-center">
+                            <img src="{{ review.user.get_profile_picture }}" alt="Аватар пользователя" class="rounded-circle mb-2"
+                                 style="width: 100px; height: 100px; object-fit: cover;">
+                            <h5 class="card-title text-center">{{ review.user.first_name }} {{ review.user.last_name }}</h5>
+                            <hr class="bold-hr">
+                            <p class="card-text text-center" style="word-wrap: break-word;">{{ review.text }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-center">Отзывов пока нет.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="{% static 'js/carousel.js' %}"></script>
+{% endblock %}
